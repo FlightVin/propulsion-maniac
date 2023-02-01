@@ -1,0 +1,28 @@
+#version 330 core
+  
+in vec3 ourColor;
+in vec2 TexCoord;
+in vec2 objPos;
+
+uniform sampler2D ourTexture;
+uniform float enableSmoothstep;
+
+void main()
+{
+    vec4 texColor = texture(ourTexture, TexCoord);
+    vec2 pos_ndc = 2.0 * TexCoord - 1.0;
+    float dist = length(pos_ndc);
+
+    vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+    vec4 myColor = vec4(ourColor.x, ourColor.y, ourColor.z, 1.0);
+    float step1 = 0.0;
+    float step2 = 1.0;
+
+
+    vec4 color = mix(white, myColor, smoothstep(step1, step2, dist));
+
+    if (enableSmoothstep < 0.5)
+        gl_FragColor = texColor;
+    else 
+        gl_FragColor = texColor*color;
+}
